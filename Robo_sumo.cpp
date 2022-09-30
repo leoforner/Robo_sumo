@@ -22,10 +22,8 @@ byte direcao = 0 ;
 volatile int velo = 105
  
 
-// rotina de configuração:
 void setup() {
   Serial.begin(115200);
-  for(i=0; i<2; i++) yf[i] = 0;
   pinMode(motor1V, OUTPUT);
   pinMode(motor1B, OUTPUT);
   pinMode(motor1F, OUTPUT);
@@ -40,14 +38,13 @@ void setup() {
 }
 
 void IRAM_ATTR blue(){
+
+
   motores(direcao);
 
-
-
-  
 }
 
-// loop infinito:
+
 void loop()
 {
 
@@ -63,20 +60,6 @@ void loop()
   }
 
    motores(direcao);
-
- 
-  y[0] = analogRead(ADC_PIN);
-  
-
-  // Sinal de atuação
-  us[0] = r[j];
-  
-  // Escrita sinal de controle
-  u = us[0];
-  if(u > 255) u = 255;
-  if(u < 0) u  = 0;
-
-
 
 }
 
