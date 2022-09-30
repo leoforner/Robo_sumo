@@ -59,13 +59,17 @@ void loop()
     direcao = 0
   }
 
-   motores(direcao);
+  motores(direcao);
 
+  if (especial_0)  giro_180();
+  if (especial_1)  giro_esquerda();
+  if (especial_2)  giro_direita();
+  if (especial_3)  piao();
+  if (especial_4)  batebate();
 }
 
 
 void motores(direcao){
-
 
   if (direcao != 0 && velo < 255 ){
     velo += 50;
@@ -112,6 +116,21 @@ void motores(direcao){
 
 }
 
+void giro_180(){
+
+  for (int v = 100; v < 200; v += 10)
+  {
+    analogWrite(motor1V, v);
+    analogWrite(motor1B, 0);
+    analogWrite(motor1F, 1);
+    analogWrite(motor2V, v);
+    analogWrite(motor2B, 1);
+    analogWrite(motor2F, 0);
+    delay(10)
+  }
+  
+}
+
 void giro_esquerda(){
 
   for (int v = 100; v < 200; v += 10)
@@ -125,5 +144,49 @@ void giro_esquerda(){
     delay(10)
   }
   
+}
 
+void giro_direita(){
+
+  for (int v = 100; v < 200; v += 10)
+  {
+    analogWrite(motor1V, v);
+    analogWrite(motor1B, 0);
+    analogWrite(motor1F, 1);
+    analogWrite(motor2V, v);
+    analogWrite(motor2B, 1);
+    analogWrite(motor2F, 0);
+    delay(10)
+  }
+  
+}
+
+void piao(){
+
+  for (int v = 100; v < 200; v += 10)
+  {
+    analogWrite(motor1V, v);
+    analogWrite(motor1B, 0);
+    analogWrite(motor1F, 1);
+    analogWrite(motor2V, v);
+    analogWrite(motor2B, 1);
+    analogWrite(motor2F, 0);
+    delay(10)
+  }
+  
+}
+
+void batebate(){
+
+  for (int v = 100; v < 200; v += 10)
+  {
+    analogWrite(motor1V, v);
+    analogWrite(motor1B, 0);
+    analogWrite(motor1F, 1);
+    analogWrite(motor2V, v);
+    analogWrite(motor2B, 1);
+    analogWrite(motor2F, 0);
+    delay(10)
+  }
+  
 }
