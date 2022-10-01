@@ -17,7 +17,6 @@
 #define motor2F 11
 #define bluetooth 16
 
-
 byte direcao = 0 ;
 volatile int velo = 105
  
@@ -44,7 +43,6 @@ void IRAM_ATTR blue(){
 
 }
 
-
 void loop()
 {
 
@@ -68,7 +66,6 @@ void loop()
   if (especial_4)  batebate();
 }
 
-
 void motores(direcao){
 
   if (direcao != 0 && velo < 255 ){
@@ -78,7 +75,7 @@ void motores(direcao){
     velo = 105;
   }
 
-  while (direcao == 1)
+  while (direcao == 1)//pra tras
   {
     analogWrite(motor1V, velo);
     analogWrite(motor1B, 1);
@@ -88,7 +85,7 @@ void motores(direcao){
     analogWrite(motor2F, 0);
   }
 
-  while (direcao == 0)
+  while (direcao == 0)//parado
   {
     analogWrite(motor1V, 0);
     analogWrite(motor1B, 0);
@@ -98,7 +95,7 @@ void motores(direcao){
     analogWrite(motor2F, 0);
   }
 
-  while (direcao == 2)
+  while (direcao == 2)// pra frente
   {
     analogWrite(motor1V, velo);
     analogWrite(motor1B, 0);
@@ -126,7 +123,7 @@ void giro_180(){
     analogWrite(motor2V, v);
     analogWrite(motor2B, 1);
     analogWrite(motor2F, 0);
-    delay(10)
+    delay(20)
   }
   
 }
@@ -136,11 +133,11 @@ void giro_esquerda(){
   for (int v = 100; v < 200; v += 10)
   {
     analogWrite(motor1V, v);
-    analogWrite(motor1B, 0);
-    analogWrite(motor1F, 1);
+    analogWrite(motor1B, 1);
+    analogWrite(motor1F, 0);
     analogWrite(motor2V, v);
-    analogWrite(motor2B, 1);
-    analogWrite(motor2F, 0);
+    analogWrite(motor2B, 0);
+    analogWrite(motor2F, 1);
     delay(10)
   }
   
@@ -173,20 +170,32 @@ void piao(){
     analogWrite(motor2F, 0);
     delay(10)
   }
+  delay(10000);
   
 }
 
 void batebate(){
-
-  for (int v = 100; v < 200; v += 10)
+  for (byte i = 0; i < 3; i++)
   {
-    analogWrite(motor1V, v);
-    analogWrite(motor1B, 0);
-    analogWrite(motor1F, 1);
-    analogWrite(motor2V, v);
-    analogWrite(motor2B, 1);
-    analogWrite(motor2F, 0);
-    delay(10)
+    for (int v = 100; v < 200; v += 10)
+    {
+      analogWrite(motor1V, v);
+      analogWrite(motor1B, 0);
+      analogWrite(motor1F, 1);
+      analogWrite(motor2V, v);
+      analogWrite(motor2B, 0);
+      analogWrite(motor2F, 1);
+      delay(10)
+    }
+    for (int v = 100; v < 200; v += 10)
+    {
+      analogWrite(motor1V, v);
+      analogWrite(motor1B, 1);
+      analogWrite(motor1F, 0);
+      analogWrite(motor2V, v);
+      analogWrite(motor2B, 1);
+      analogWrite(motor2F, 0);
+      delay(20)
+    }
   }
-  
 }
