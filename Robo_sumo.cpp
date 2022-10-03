@@ -37,19 +37,23 @@ void setup() {
   attachInterrupt(bluetooth, blue, RISING);
   // vou usar a variavel bluethooth como pino para ativar a interrupcao ate descobir 
   // qual a variavel de coneccao do sinal bluetooth 
-  tempo = millis();
+  tempo1 = millis();
+  tempo2 = millis();
+  tempo3 = millis();
 }
 
 void IRAM_ATTR blue(){
-
-
+  if (Serial.available()) 
+  {
+    direcao = Serial.read();
+  }
   motores(direcao);
 
 }
 
 void loop()
 {
-  bluetooth
+  direcao = bluetooth
 
   if (Serial.available()) {
     direcao = Serial.read();
@@ -93,13 +97,16 @@ void loop()
   if (especial_2)  giro_direita();
   if (especial_3)  piao();
   if (especial_4)  batebate();
+
+  direcao_anterior = bluetooth; 
 }
 
 void motores(direcao){
 
-  if (direcao != 0 && velo < 255 )
+  if (direcao != 0 && velo < 255 && millis() > tempo2 + 20)
   {
     velo += 50;
+    tempo2 = millis();
   }
 
   while (direcao == 1)//pra tras
@@ -127,10 +134,10 @@ void motores(direcao){
     analogWrite(motor2F, F);
   }
 
-  if (millis() > tempo + 500 ){
+  if (millis() > tempo3 + 500 ){
     Serial.print("a velocidade e: ");
     Serial.print(velo);
-    tempo = millis(); 
+    tempo3 = millis(); 
   }
 
 }
