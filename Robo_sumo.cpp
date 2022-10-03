@@ -17,7 +17,9 @@
 #define motor2F 11
 #define bluetooth 16
 
+
 byte direcao = 0 ;
+byte direcao_antes = 0;
 volatile int velo = 105
  
 
@@ -45,9 +47,7 @@ void IRAM_ATTR blue(){
 
 void loop()
 {
-
   bluetooth
-
 
   if (Serial.available()) {
     direcao = Serial.read();
@@ -57,6 +57,33 @@ void loop()
     direcao = 0
   }
 
+  if (direcao == 0)//parado
+  {
+    if (direcao_anterior = 1 ){
+      F = 0;
+      B = 1;
+    }else if (direcao_anterior = 2) {
+      F = 1;
+      B = 0
+    }else {
+      F = 0;
+      B = 0;
+    }
+    tempo = millis();
+  
+   if ((tempo >= millis() + 100) && i > 100)
+   {
+     analogWrite(motor1V, i);
+     analogWrite(motor1B, B);
+     analogWrite(motor1F, F);
+     analogWrite(motor2V, i);
+     analogWrite(motor2B, B);
+     analogWrite(motor2F, F);
+     tempo =  millis();
+     i = i -20
+   }
+  }   
+  
   motores(direcao);
 
   if (especial_0)  giro_180();
@@ -85,16 +112,7 @@ void motores(direcao){
     analogWrite(motor2F, 0);
   }
 
-  while (direcao == 0)//parado
-  {
-    analogWrite(motor1V, 0);
-    analogWrite(motor1B, 0);
-    analogWrite(motor1F, 0);
-    analogWrite(motor2V, 0);
-    analogWrite(motor2B, 0);
-    analogWrite(motor2F, 0);
-  }
-
+ 
   while (direcao == 2)// pra frente
   {
     analogWrite(motor1V, velo);
