@@ -20,6 +20,8 @@
 
 byte direcao = 0 ;
 byte direcao_antes = 0;
+byte F = 0;
+byte B = 0;
 volatile int velo = 105
  
 
@@ -35,7 +37,7 @@ void setup() {
   attachInterrupt(bluetooth, blue, RISING);
   // vou usar a variavel bluethooth como pino para ativar a interrupcao ate descobir 
   // qual a variavel de coneccao do sinal bluetooth 
-
+  tempo = millis();
 }
 
 void IRAM_ATTR blue(){
@@ -71,12 +73,12 @@ void loop()
     }
     tempo = millis();
   
-   if ((tempo >= millis() + 100) && i > 100)
+   if ((tempo >= millis() + 100) && velo > 100)
    {
-     analogWrite(motor1V, i);
+     analogWrite(motor1V, velo);
      analogWrite(motor1B, B);
      analogWrite(motor1F, F);
-     analogWrite(motor2V, i);
+     analogWrite(motor2V, velo);
      analogWrite(motor2B, B);
      analogWrite(motor2F, F);
      tempo =  millis();
@@ -95,32 +97,34 @@ void loop()
 
 void motores(direcao){
 
-  if (direcao != 0 && velo < 255 ){
+  if (direcao != 0 && velo < 255 )
+  {
     velo += 50;
-    atraso = millis();
-  }else if (atraso >  100 ) {
-    velo = 105;
   }
 
   while (direcao == 1)//pra tras
   {
+    B = 1;
+    F = 0;
     analogWrite(motor1V, velo);
-    analogWrite(motor1B, 1);
-    analogWrite(motor1F, 0);
+    analogWrite(motor1B, B);
+    analogWrite(motor1F, F);
     analogWrite(motor2V, velo);
-    analogWrite(motor2B, 1);
-    analogWrite(motor2F, 0);
+    analogWrite(motor2B, B);
+    analogWrite(motor2F, F);
   }
 
  
   while (direcao == 2)// pra frente
   {
+    B = 0;
+    F = 1;
     analogWrite(motor1V, velo);
-    analogWrite(motor1B, 0);
-    analogWrite(motor1F, 1);
+    analogWrite(motor1B, B);
+    analogWrite(motor1F, F);
     analogWrite(motor2V, velo);
-    analogWrite(motor2B, 0);
-    analogWrite(motor2F, 1);
+    analogWrite(motor2B, B);
+    analogWrite(motor2F, F);
   }
 
   if (millis() > tempo + 500 ){
