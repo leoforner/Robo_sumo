@@ -1,14 +1,15 @@
 //Arduino 
-/*
+
 #define motor1V 0
 #define motor1B 1
 #define motor1F 2
 #define motor2V 3
 #define motor2B 4
 #define motor2F 5
-*/
+
 
 // ESP
+/*
 #define motor1V 6
 #define motor1B 7
 #define motor1F 8
@@ -16,7 +17,7 @@
 #define motor2B 10
 #define motor2F 11
 #define bluetooth 16
-
+*/
 
 byte direcao = 0 ;
 byte direcao_antes = 0;
