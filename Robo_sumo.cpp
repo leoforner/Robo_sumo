@@ -6,6 +6,36 @@
 #define motor2B 10
 #define motor2F 11
 #define bluetooth 16
+/*
+Forward -> F
+Back -> B
+Left -> L
+Right -> R
+Forward Left -> G
+Forward Right -> I
+BackLeft -> H
+Back Right -> J
+Stop -> S
+Front Lights On -> W (upper case)
+Front Lights Off -> w (lower case)
+Back Lights On -> U (upper case)
+Back Lights Off -> u (lower case)
+Horn On -> V (upper case) Horn Off -> v (lower case)
+Extra On -> X (upper case)
+Extra Off-> x (lower case)
+Speed 0 - 0 (zero)
+Speed 10 -> 1
+Speed 20 -> 2
+Speed 30 -> 3
+Speed 40 - 4
+Speed 50 -> 5
+Speed 60 -> 6
+Speed 70 -> ?
+Speed 80 -> 8
+Speed 90 -> 9
+Speed 100 -> q
+Stop All -> D
+*/
 
 
 byte direcao = 0 ;
