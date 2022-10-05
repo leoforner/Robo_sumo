@@ -5,7 +5,10 @@
 #define motor2V 9
 #define motor2B 10
 #define motor2F 11
-#define bluetooth 16
+#include "BluetoothSerial.h"
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED) #error Bluetooth is not enabled! Please run 'make menuconfig' to and enable it
+#endif
+
 /*
 Forward -> F
 Back -> B
@@ -20,7 +23,8 @@ Front Lights On -> W (upper case)
 Front Lights Off -> w (lower case)
 Back Lights On -> U (upper case)
 Back Lights Off -> u (lower case)
-Horn On -> V (upper case) Horn Off -> v (lower case)
+Horn On -> V (upper case) 
+Horn Off -> v (lower case)
 Extra On -> X (upper case)
 Extra Off-> x (lower case)
 Speed 0 - 0 (zero)
@@ -37,23 +41,25 @@ Speed 100 -> q
 Stop All -> D
 */
 
-
 byte direcao = 0 ;
-byte direcao_antes = 0;
 byte F = 0;
 byte B = 0;
-volatile int velo = 105
- 
+volatile int velo = 0;
+byte speed = 0;
+BluetoothSerial SerialBT;
+
 
 void setup() {
   Serial.begin(115200);
+  SerialBT.begin("sumo");
+  Serial.println("Bluetooth Started! Ready to pair...");
   pinMode(motor1V, OUTPUT);
   pinMode(motor1B, OUTPUT);
   pinMode(motor1F, OUTPUT);
   pinMode(motor2V, OUTPUT);
   pinMode(motor2B, OUTPUT);
   pinMode(motor2F, OUTPUT);
-  pinMode(bluetooth, INPUT);
+  
   attachInterrupt(bluetooth, blue, RISING);
   // vou usar a variavel bluethooth como pino para ativar a interrupcao ate descobir 
   // qual a variavel de coneccao do sinal bluetooth 
@@ -73,7 +79,25 @@ void IRAM_ATTR blue(){
 
 void loop()
 {
-  direcao = bluetooth
+
+  if (Serial.available()){
+    SerialBT.write(Serial.read()); //envio p/celular
+  }
+  if (SerialBT.available()){
+    Serial.write(SerialBT.read()); //receber
+    if ( SerialBT.read() == 'F' OR 'B' OR 'L' OR 'R' OR 'G' OR 'I' OR 'H' OR 'J' OR 'S' ){
+     direcao = SerialBT.read();
+    }
+    if ( SerialBT.read() == 0 OR 1 OR 2 OR 3 OR 4 OR 5 OR 6 OR 7 OR 8 OR 9 OR q ){
+      speed = SerialBT.read();
+    }
+    if ( SerialBT.read() == 'w' OR 'W' OR 'u' OR 'U' OR 'x' OR 'X' OR 'v' OR 'V' OR  ){
+      especial = SerialBT.read();
+    }
+    
+  }
+
+ 
 
   if (Serial.available()) {
     direcao = Serial.read();
