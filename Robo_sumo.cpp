@@ -46,7 +46,6 @@ byte direcao = 0 ;
 byte F = 0;
 byte B = 0;
 volatile int velo = 0;
-byte speed = 0;
 BluetoothSerial SerialBT;
 bool test = false;
 
@@ -102,6 +101,8 @@ void loop()
     if ( comparacao("0123456789q",SerialBT.read()) ){
       velo = 255*atoi(SerialBT.read())/10;
       if (SerialBT.read() =="q") velo = 10;
+      Serial.print("a velocidade e: ");
+      Serial.println(velo);
       temp = false;
     }
     if ( comparacao("wWuUxXvV", SerialBT.read()) ){
@@ -111,7 +112,7 @@ void loop()
     
   }
   
-  motores(direcao);
+  motores( direcao, velo );
 
   if (especial_0)  giro_180();
   if (especial_1)  giro_esquerda();
@@ -119,40 +120,102 @@ void loop()
   if (especial_3)  piao();
   if (especial_4)  batebate();
 
-  direcao_anterior = bluetooth; 
 }
 
-void motores(direcao){
+void motores( dire, v ){
 
   // FBLRGIHJS
-  if (direcao == F)//pra frente
+  switch (dire)
   {
+  case 'F':
     Serial.println("Pra frente");
-    B = 1;
-    F = 0;
-    velo1 =  ;
-    velo2 = ;
+    B1 = 0;
+    F1 = 1;
+    B2 = 0;
+    F2 = 1;
+    velo1 = v;
+    velo2 = v;
+    break;
+  case 'B':
+    Serial.println("Pra tras");
+    B1 = 1;
+    F1 = 0;
+    B2 = 1;
+    F2 = 0;
+    velo1 = v;
+    velo2 = v;
+    break;
+  case 'L':
+    Serial.println("esquerinha");
+    B1 = 1;
+    F1 = 0;
+    B2 = 0;
+    F2 = 1;
+    velo1 = v;
+    velo2 = v;
+    break;
+  case 'R':
+    Serial.println("direitinha");
+    B1 = 0;
+    F1 = 1;
+    B2 = 1;
+    F2 = 0;
+    velo1 = v;
+    velo2 = v;
+    break;
+  case 'G':
+    Serial.println("esquerda frente");
+    B1 = 0;
+    F1 = 1;
+    B2 = 0;
+    F2 = 1;
+    velo1 = v/2;
+    velo2 = v;
+    break;
+  case 'I':
+    Serial.println("direita frente");
+    B1 = 0;
+    F1 = 1;
+    B2 = 0;
+    F2 = 1;
+    velo1 = v;
+    velo2 = v/2;
+    break;
+  case 'H':
+    Serial.println("esquerda tras");
+    B1 = 1;
+    F1 = 0;
+    B2 = 1;
+    F2 = 0;
+    velo1 = v/2;
+    velo2 = v;
+    break;
+  case 'J':
+    Serial.println("direita tras");
+    B1 = 1;
+    F1 = 0;
+    B2 = 1;
+    F2 = 0;
+    velo1 = v;
+    velo2 = v/2;
+    break;
+   default:
+    Serial.println("PAROU PAROU PAROU");
+    B1 = 0;
+    F1 = 0;
+    B2 = 0;
+    F2 = 1;
+    velo1 = 0;
+    velo2 = 0;
+    break;
   }
 
-  if (direcao == 2)// pra tras
-  {
-    Serial.println("Pra frente");
-    B = 0;
-    F = 1;
-  }
-
-  if (millis() > tempo3 + 500 ){
-    Serial.print("a velocidade e: ");
-    Serial.print(velo);
-    tempo3 = millis(); 
-  }
-
-    analogWrite(motor1V, velo);
-    analogWrite(motor1B, B);
-    analogWrite(motor1F, F);
-    analogWrite(motor2V, velo);
-    analogWrite(motor2B, B);
-    analogWrite(motor2F, F);
+    analogWrite(motor1V, velo1);
+    analogWrite(motor1B, B1);
+    analogWrite(motor1F, F1);
+    analogWrite(motor2V, velo2);
+    analogWrite(motor2B, B2);
+    analogWrite(motor2F, F2);
 
 }
 
