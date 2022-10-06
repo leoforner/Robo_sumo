@@ -110,12 +110,13 @@ void loop()
   
   motores( direcao, velo );
 
+/*
   if (especial_0)  giro_180();
   if (especial_1)  giro_esquerda();
   if (especial_2)  giro_direita();
   if (especial_3)  piao();
   if (especial_4)  batebate();
-
+*/
 }
 
 void motores( dire, v ){
