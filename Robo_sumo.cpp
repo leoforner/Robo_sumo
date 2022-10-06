@@ -100,7 +100,7 @@ void loop()
       temp = false;
     }
     if ( comparacao("0123456789q",SerialBT.read()) ){
-      speed = SerialBT.read();
+      velo = SerialBT.read();
       temp = false;
     }
     if ( comparacao("wWuUxXvV", SerialBT.read()) ){
@@ -123,35 +123,21 @@ void loop()
 
 void motores(direcao){
 
-  if (direcao != 0 && velo < 255 && millis() > tempo2 + 20)
+  // FBLRGIHJS
+  if (direcao == F)//pra frente
   {
-    velo += 50;
-    tempo2 = millis();
-  }
-
-  while (direcao == 1)//pra tras
-  {
+    Serial.println("Pra frente");
     B = 1;
     F = 0;
-    analogWrite(motor1V, velo);
-    analogWrite(motor1B, B);
-    analogWrite(motor1F, F);
-    analogWrite(motor2V, velo);
-    analogWrite(motor2B, B);
-    analogWrite(motor2F, F);
+    velo1 =  ;
+    velo2 = ;
   }
 
- 
-  while (direcao == 2)// pra frente
+  if (direcao == 2)// pra tras
   {
+    Serial.println("Pra frente");
     B = 0;
     F = 1;
-    analogWrite(motor1V, velo);
-    analogWrite(motor1B, B);
-    analogWrite(motor1F, F);
-    analogWrite(motor2V, velo);
-    analogWrite(motor2B, B);
-    analogWrite(motor2F, F);
   }
 
   if (millis() > tempo3 + 500 ){
@@ -159,6 +145,13 @@ void motores(direcao){
     Serial.print(velo);
     tempo3 = millis(); 
   }
+
+    analogWrite(motor1V, velo);
+    analogWrite(motor1B, B);
+    analogWrite(motor1F, F);
+    analogWrite(motor2V, velo);
+    analogWrite(motor2B, B);
+    analogWrite(motor2F, F);
 
 }
 
