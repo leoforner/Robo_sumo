@@ -42,7 +42,7 @@ Speed 100 -> q
 Stop All -> D
 */
 
-char direcao = 's';
+char direcao = 'S';
 byte F = 0;
 byte B = 0;
 int velo = 0;
@@ -62,7 +62,7 @@ void setup() {
   pinMode(motor2F, OUTPUT);
   timer = timerBegin(0, 80000, true);
   timerAttachInterrupt(timer, &onTimer, true);
-  timerAlarmWrite(timer, 1000, true);
+  timerAlarmWrite(timer, 100, true);
   timerAlarmEnable(timer);
 }
 
