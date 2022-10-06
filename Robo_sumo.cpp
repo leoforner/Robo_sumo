@@ -42,10 +42,10 @@ Speed 100 -> q
 Stop All -> D
 */
 
-byte direcao = 0 ;
+char direcao = 's';
 byte F = 0;
 byte B = 0;
-volatile int velo = 0;
+int velo = 0;
 BluetoothSerial SerialBT;
 bool test = false;
 
@@ -60,13 +60,9 @@ void setup() {
   pinMode(motor2V, OUTPUT);
   pinMode(motor2B, OUTPUT);
   pinMode(motor2F, OUTPUT);
-  
   attachInterrupt(bluetooth, blue, RISING);
   // vou usar a variavel bluethooth como pino para ativar a interrupcao ate descobir 
   // qual a variavel de coneccao do sinal bluetooth 
-  tempo1 = millis();
-  tempo2 = millis();
-  tempo3 = millis();
 }
 
 void IRAM_ATTR blue(){
@@ -81,7 +77,7 @@ void IRAM_ATTR blue(){
 void comparacao(comp,recebido){
   for (size_t i = 0; i < strlen(caracteres); i++)
   {
-    temp = temp || strcmp(comp[i], recebido);
+    test = test || strcmp(comp[i], recebido);
   }
   
 }
@@ -96,18 +92,18 @@ void loop()
     Serial.write(SerialBT.read()); //receber
     if ( comparacao("FBLRGIHJS", SerialBT.read()) ){
       direcao = SerialBT.read();
-      temp = false;
+      test = false;
     }
     if ( comparacao("0123456789q",SerialBT.read()) ){
       velo = 255*atoi(SerialBT.read())/10;
       if (SerialBT.read() =="q") velo = 10;
       Serial.print("a velocidade e: ");
       Serial.println(velo);
-      temp = false;
+      test = false;
     }
     if ( comparacao("wWuUxXvV", SerialBT.read()) ){
       especial = SerialBT.read();
-      temp = false;
+      test = false;
     }
     
   }
@@ -124,7 +120,6 @@ void loop()
 
 void motores( dire, v ){
 
-  // FBLRGIHJS
   switch (dire)
   {
   case 'F':
@@ -210,12 +205,12 @@ void motores( dire, v ){
     break;
   }
 
-    analogWrite(motor1V, velo1);
-    analogWrite(motor1B, B1);
-    analogWrite(motor1F, F1);
-    analogWrite(motor2V, velo2);
-    analogWrite(motor2B, B2);
-    analogWrite(motor2F, F2);
+  analogWrite(motor1B, B1);
+  analogWrite(motor1F, F1);
+  analogWrite(motor1V, velo1);
+  analogWrite(motor2V, velo2);
+  analogWrite(motor2B, B2);
+  analogWrite(motor2F, F2);
 
 }
 
