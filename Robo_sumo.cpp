@@ -1,4 +1,5 @@
 // ESP
+#include <string.h>
 #define motor1V 6
 #define motor1B 7
 #define motor1F 8
@@ -47,6 +48,7 @@ byte B = 0;
 volatile int velo = 0;
 byte speed = 0;
 BluetoothSerial SerialBT;
+bool test = false;
 
 
 void setup() {
@@ -77,6 +79,14 @@ void IRAM_ATTR blue(){
 
 }
 
+void comparacao(comp,recebido){
+  for (size_t i = 0; i < strlen(caracteres); i++)
+  {
+    temp = temp || strcmp(comp[i], recebido);
+  }
+  
+}
+
 void loop()
 {
 
@@ -85,54 +95,20 @@ void loop()
   }
   if (SerialBT.available()){
     Serial.write(SerialBT.read()); //receber
-    if ( SerialBT.read() == 'F' OR 'B' OR 'L' OR 'R' OR 'G' OR 'I' OR 'H' OR 'J' OR 'S' ){
-     direcao = SerialBT.read();
+    if ( comparacao("FBLRGIHJS", SerialBT.read()) ){
+      direcao = SerialBT.read();
+      temp = false;
     }
-    if ( SerialBT.read() == 0 OR 1 OR 2 OR 3 OR 4 OR 5 OR 6 OR 7 OR 8 OR 9 OR q ){
+    if ( comparacao("0123456789q",SerialBT.read()) ){
       speed = SerialBT.read();
+      temp = false;
     }
-    if ( SerialBT.read() == 'w' OR 'W' OR 'u' OR 'U' OR 'x' OR 'X' OR 'v' OR 'V' OR  ){
+    if ( comparacao("wWuUxXvV", SerialBT.read()) ){
       especial = SerialBT.read();
+      temp = false;
     }
     
   }
-
- 
-
-  if (Serial.available()) {
-    direcao = Serial.read();
-  }
-  
-  if (direcao != (1 || 2)){
-    direcao = 0
-  }
-
-  if (direcao == 0)//parado
-  {
-    if (direcao_anterior = 1 ){
-      F = 0;
-      B = 1;
-    }else if (direcao_anterior = 2) {
-      F = 1;
-      B = 0
-    }else {
-      F = 0;
-      B = 0;
-    }
-    tempo = millis();
-  
-   if ((tempo >= millis() + 100) && velo > 100)
-   {
-     analogWrite(motor1V, velo);
-     analogWrite(motor1B, B);
-     analogWrite(motor1F, F);
-     analogWrite(motor2V, velo);
-     analogWrite(motor2B, B);
-     analogWrite(motor2F, F);
-     tempo =  millis();
-     i = i -20
-   }
-  }   
   
   motores(direcao);
 
