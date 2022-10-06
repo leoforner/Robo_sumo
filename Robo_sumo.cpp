@@ -60,18 +60,19 @@ void setup() {
   pinMode(motor2V, OUTPUT);
   pinMode(motor2B, OUTPUT);
   pinMode(motor2F, OUTPUT);
-  attachInterrupt(bluetooth, blue, RISING);
-  // vou usar a variavel bluethooth como pino para ativar a interrupcao ate descobir 
-  // qual a variavel de coneccao do sinal bluetooth 
+  timer = timerBegin(0, 80000, true);
+  timerAttachInterrupt(timer, &onTimer, true);
+  timerAlarmWrite(timer, 1000, true);
+  timerAlarmEnable(timer);
 }
 
-void IRAM_ATTR blue(){
-  if (Serial.available()) 
+void IRAM_ATTR onTimer() {
+ if ( comparacao("FBLRGIHJS", SerialBT.read()) )
   {
-    direcao = Serial.read();
+    direcao = SerialBT.read();
+    test = false;
   }
-  motores(direcao);
-
+ 
 }
 
 void comparacao(comp,recebido){
