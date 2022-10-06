@@ -196,7 +196,7 @@ void motores( dire, v ){
     velo1 = v;
     velo2 = v/2;
     break;
-   default:
+   case 'S':
     Serial.println("PAROU PAROU PAROU");
     B1 = 0;
     F1 = 0;
@@ -204,6 +204,8 @@ void motores( dire, v ){
     F2 = 1;
     velo1 = 0;
     velo2 = 0;
+    break;
+  default:
     break;
   }
 
