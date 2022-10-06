@@ -100,7 +100,8 @@ void loop()
       temp = false;
     }
     if ( comparacao("0123456789q",SerialBT.read()) ){
-      velo = SerialBT.read();
+      velo = 255*atoi(SerialBT.read())/10;
+      if (SerialBT.read() =="q") velo = 10;
       temp = false;
     }
     if ( comparacao("wWuUxXvV", SerialBT.read()) ){
