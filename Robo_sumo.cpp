@@ -42,7 +42,7 @@ Speed 100 -> q
 Stop All -> D
 */
 
-char direcao = 'S';
+char direcao[1];
 byte F = 0;
 byte B = 0;
 int velo = 0;
@@ -76,7 +76,7 @@ void IRAM_ATTR onTimer() {
 }
 
 void comparacao(comp,recebido){
-  for (size_t i = 0; i < strlen(caracteres); i++)
+  for (size_t i = 0; i < strlen(comp); i++)
   {
     test = test || strcmp(comp[i], recebido);
   }
