@@ -6,9 +6,13 @@
 #define motor2V 9
 #define motor2B 10
 #define motor2F 11
-#include "BluetoothSerial.h"
-#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED) #error Bluetooth is not enabled! Please run 'make menuconfig' to and enable it
-#endif
+const int pinoRX = 2; //PINO DIGITAL 2 (RX)
+const int pinoTX = 3; //PINO DIGITAL 3 (TX)
+//#include "BluetoothSerial.h"
+//#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED) #error Bluetooth is not enabled! Please run 'make menuconfig' to and enable it
+//#endif
+//#include <SoftwareSerial.h>
+//oftwareSerial bluetooth(pinoRX, pinoTX);
 
 /*
 Forward -> F
@@ -42,74 +46,114 @@ Speed 100 -> q
 Stop All -> D
 */
 
-char direcao[1];
-byte F = 0;
-byte B = 0;
-int velo = 0;
-BluetoothSerial SerialBT;
+char direcao, velocidade, dadoBluetooth; //VARIÁVEL QUE ARMAZENA O VALOR ENVIADO PELO BLUETOOTH
+
+int velo, velo_1, velo_2;
+byte B_1,B_2,F_1,F_2;
+//BluetoothSerial SerialBT;
 bool test = false;
 
 
 void setup() {
-  Serial.begin(115200);
-  SerialBT.begin("sumo");
+  Serial.begin(9600);
+  //SerialBT.begin("sumo");
+  /*
+  bluetooth.begin(9600); //INICIALIZA A SERIAL DO BLUETOOTH
+  bluetooth.print("$"); //IMPRIME O CARACTERE
+  bluetooth.print("$"); //IMPRIME O CARACTERE
+  bluetooth.print("$"); //IMPRIME O CARACTERE
   Serial.println("Bluetooth Started! Ready to pair...");
+  */
   pinMode(motor1V, OUTPUT);
   pinMode(motor1B, OUTPUT);
   pinMode(motor1F, OUTPUT);
   pinMode(motor2V, OUTPUT);
   pinMode(motor2B, OUTPUT);
   pinMode(motor2F, OUTPUT);
-  timer = timerBegin(0, 80000, true);
-  timerAttachInterrupt(timer, &onTimer, true);
-  timerAlarmWrite(timer, 100, true);
-  timerAlarmEnable(timer);
+  //timer = timerBegin(0, 80000, true);
+  //timerAttachInterrupt(timer, &onTimer, true);
+  //timerAlarmWrite(timer, 100, true);
+  //timerAlarmEnable(timer);
 }
-
+/*
 void IRAM_ATTR onTimer() {
  if ( comparacao("FBLRGIHJS", SerialBT.read()) )
   {
     direcao = SerialBT.read();
     test = false;
   }
- 
 }
-
-void comparacao(comp,recebido){
-  for (size_t i = 0; i < strlen(comp); i++)
+*/
+/*
+void comparacao(char comparador,char recebido){
+  int tamanho = strlen(comparador);
+  for (size_t i = 0; i < tamanho; i++)
   {
-    test = test || strcmp(comp[i], recebido);
+    int teste = strcmp(comparador[i], recebido);
+    if (teste == 0 ) test = true;
   }
-  
+  return test;
 }
+*/
 
 void loop()
 {
-
-  if (Serial.available()){
-    SerialBT.write(Serial.read()); //envio p/celular
-  }
-  if (SerialBT.available()){
-    Serial.write(SerialBT.read()); //receber
-    if ( comparacao("FBLRGIHJS", SerialBT.read()) ){
-      direcao = SerialBT.read();
+/* MODO BLUETOOTH
+  if (bluetooth.available()){
+    dadoBluetooth = bluetooth.read(); //VARIÁVEL RECEBE O VALOR ENVIADO PELO BLUETOOTH
+    if ( comparacao("FBLRGIHJS", dadoBluetooth) ){
+      direcao = dadoBluetooth;
       test = false;
     }
-    if ( comparacao("0123456789q",SerialBT.read()) ){
-      velo = 255*atoi(SerialBT.read())/10;
-      if (SerialBT.read() =="q") velo = 10;
+    if ( comparacao("0123456789q",dadoBluetooth) ){
+      velo = 255*atoi(dadoBluetooth)/10;
+      if (dadoBluetooth =='q') velo = 0;
       Serial.print("a velocidade e: ");
       Serial.println(velo);
       test = false;
     }
-    if ( comparacao("wWuUxXvV", SerialBT.read()) ){
-      especial = SerialBT.read();
+    if ( comparacao("wWuUxXvV", dadoBluetooth) ){
+      especial = dadoBluetooth;
       test = false;
     }
     
   }
-  
+  */
+
+/* MODO SERIAL COM COMPARAÇÃO
+  if (Serial.available()){
+    dadoBluetooth = Serial.read(); //VARIÁVEL RECEBE O VALOR ENVIADO PELO BLUETOOTH
+    if ( comparacao("FBLRGIHJS", dadoBluetooth) ){
+      direcao = dadoBluetooth;
+      test = false;
+    }
+    if ( comparacao("0123456789q",dadoBluetooth) ){
+      velo = 255*atoi(dadoBluetooth)/10;
+      if (dadoBluetooth =='q') velo = 0;
+      Serial.print("a velocidade e: ");
+      Serial.println(velo);
+      test = false;
+    }
+    if ( comparacao("wWuUxXvV", dadoBluetooth) ){
+      especial = dadoBluetooth;
+      test = false;
+    }
+    
+  }
+  */
+
+/* MODO SERIAL DIRETO */
+
+if (Serial.available()){
+  direcao = Serial.read();
+  Serial.println(direcao);
+  velocidade = Serial.read();
+  Serial.println(velocidade);
+  velo = velocidade - '0';
+
   motores( direcao, velo );
+}
+
 
 /*
   if (especial_0)  giro_180();
@@ -120,104 +164,108 @@ void loop()
 */
 }
 
-void motores( dire, v ){
+void motores( char dire, int v ){
+
+  v = 255*v/10;
+  Serial.println(v);
+
 
   switch (dire)
   {
   case 'F':
     Serial.println("Pra frente");
-    B1 = 0;
-    F1 = 1;
-    B2 = 0;
-    F2 = 1;
-    velo1 = v;
-    velo2 = v;
+    F_1 = HIGH;
+    B_2 = LOW;
+    B_1 = LOW;
+    F_2 = HIGH;
+    velo_1 = v;
+    velo_2 = v;
     break;
   case 'B':
     Serial.println("Pra tras");
-    B1 = 1;
-    F1 = 0;
-    B2 = 1;
-    F2 = 0;
-    velo1 = v;
-    velo2 = v;
+    B_1 = HIGH;
+    F_1 = LOW;
+    B_2 = HIGH;
+    F_2 = LOW;
+    velo_1 = v;
+    velo_2 = v;
     break;
   case 'L':
     Serial.println("esquerinha");
-    B1 = 1;
-    F1 = 0;
-    B2 = 0;
-    F2 = 1;
-    velo1 = v;
-    velo2 = v;
+    B_1 = HIGH;
+    F_1 = LOW;
+    B_2 = LOW;
+    F_2 = HIGH;
+    velo_1 = v;
+    velo_2 = v;
     break;
   case 'R':
     Serial.println("direitinha");
-    B1 = 0;
-    F1 = 1;
-    B2 = 1;
-    F2 = 0;
-    velo1 = v;
-    velo2 = v;
+    B_1 = LOW;
+    F_1 = HIGH;
+    B_2 = HIGH;
+    F_2 = LOW;
+    velo_1 = v;
+    velo_2 = v;
     break;
   case 'G':
     Serial.println("esquerda frente");
-    B1 = 0;
-    F1 = 1;
-    B2 = 0;
-    F2 = 1;
-    velo1 = v/2;
-    velo2 = v;
+    B_1 = LOW;
+    F_1 = HIGH;
+    B_2 = LOW;
+    F_2 = HIGH;
+    velo_1 = v/2;
+    velo_2 = v;
     break;
   case 'I':
     Serial.println("direita frente");
-    B1 = 0;
-    F1 = 1;
-    B2 = 0;
-    F2 = 1;
-    velo1 = v;
-    velo2 = v/2;
+    B_1 = LOW;
+    F_1 = HIGH;
+    B_2 = LOW;
+    F_2 = HIGH;
+    velo_1 = v;
+    velo_2 = v/2;
     break;
   case 'H':
     Serial.println("esquerda tras");
-    B1 = 1;
-    F1 = 0;
-    B2 = 1;
-    F2 = 0;
-    velo1 = v/2;
-    velo2 = v;
+    B_1 = HIGH;
+    F_1 = LOW;
+    B_2 = HIGH;
+    F_2 = LOW;
+    velo_1 = v/2;
+    velo_2 = v;
     break;
   case 'J':
     Serial.println("direita tras");
-    B1 = 1;
-    F1 = 0;
-    B2 = 1;
-    F2 = 0;
-    velo1 = v;
-    velo2 = v/2;
+    B_1 = HIGH;
+    F_1 = LOW;
+    B_2 = HIGH;
+    F_2 = LOW;
+    velo_1 = v;
+    velo_2 = v/2;
     break;
    case 'S':
     Serial.println("PAROU PAROU PAROU");
-    B1 = 0;
-    F1 = 0;
-    B2 = 0;
-    F2 = 1;
-    velo1 = 0;
-    velo2 = 0;
+    B_1 = LOW;
+    F_1 = LOW;
+    B_2 = LOW;
+    F_2 = LOW;
+    velo_1 = 0;
+    velo_2 = 0;
     break;
   default:
     break;
   }
 
-  analogWrite(motor1B, B1);
-  analogWrite(motor1F, F1);
-  analogWrite(motor1V, velo1);
-  analogWrite(motor2V, velo2);
-  analogWrite(motor2B, B2);
-  analogWrite(motor2F, F2);
+  analogWrite(motor1B, B_1);
+  analogWrite(motor1F, F_1);
+  analogWrite(motor1V, velo_1);
+  analogWrite(motor2V, velo_2);
+  analogWrite(motor2B, B_2);
+  analogWrite(motor2F, F_2);
 
 }
-
+/*
 void giro_180(){
 
   for (int v = 100; v < 200; v += 10)
@@ -304,3 +352,4 @@ void batebate(){
     }
   }
 }
+*/
